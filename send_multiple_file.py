@@ -1,5 +1,6 @@
 import socket
 import os
+from tkinter import filedialog
 
 HOST, PORT = "192.168.29.44", 9999
 
@@ -15,13 +16,11 @@ class SendFiles:
 
     def file_input(self):
         """
-        Enter full path along with a filename
-        e.g. G:\soceket programmming\test.py, G:/soceket programmming/pic_2.png
-
+        File Dialog to select multiple filenames.
         file_names list contains tuple of filename and file-size.
         """
-        for _ in range(int(input("Number of files to share:"))):
-            file_path = input("Enter file name:")
+        file_paths = filedialog.askopenfilenames()
+        for file_path in file_paths:
             self.file_paths.append(file_path)
             self.file_names.append((os.path.basename(file_path), os.stat(file_path).st_size))
         return self.file_paths, self.file_names

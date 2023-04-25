@@ -1,16 +1,18 @@
 import socket
 import ast
 import os
+from tkinter import filedialog
 
 HOST, PORT = "192.168.29.44", 9999
+FOLDER = filedialog.askdirectory(title="Select a Folder to save Files")
 
 
 class ReceiveFiles:
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, folder):
         self.host = host
         self.port = port
-        self.dest_fold = 'Receive Folder'
+        self.dest_fold = folder
         self.soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def operation(self):
@@ -37,7 +39,7 @@ class ReceiveFiles:
             print(f"filenames received :{ast.literal_eval(filenames_sizes.decode('utf-8'))}")
             for filename, size in ast.literal_eval(filenames_sizes.decode('utf-8')):
                 buffer = size
-                with open(os.path.join(os.getcwd(), self.dest_fold, filename), 'wb') as f:
+                with open(os.path.join(self.dest_fold, filename), 'wb') as f:
                     while buffer:
                         chunk_size = 8192 if buffer >= 8192 else buffer
                         data = conn.recv(chunk_size)
@@ -49,5 +51,5 @@ class ReceiveFiles:
             conn.send(b'file data transfer is done.')
 
 
-receive_op = ReceiveFiles(HOST, PORT)
+receive_op = ReceiveFiles(HOST, PORT, FOLDER)
 receive_op.operation()
